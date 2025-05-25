@@ -1,4 +1,4 @@
-package dev.gutemberg.device.management;
+package dev.gutemberg.device.management.common;
 
 import io.hypersistence.tsid.TSID;
 
