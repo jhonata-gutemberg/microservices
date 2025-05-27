@@ -1,6 +1,7 @@
 package dev.gutemberg.device.management.api.controller;
 
 import dev.gutemberg.device.management.api.model.SensorInput;
+import dev.gutemberg.device.management.api.model.SensorOutput;
 import dev.gutemberg.device.management.common.IdGenerator;
 import dev.gutemberg.device.management.domain.model.Sensor;
 import dev.gutemberg.device.management.domain.model.SensorId;
@@ -17,8 +18,8 @@ public class SensorController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Sensor create(@RequestBody SensorInput input) {
-        final var sensor = Sensor.builder()
+    public SensorOutput create(@RequestBody SensorInput input) {
+        Sensor sensor = Sensor.builder()
                 .id(new SensorId(IdGenerator.generateTSID()))
                 .name(input.getName())
                 .ip(input.getIp())
@@ -27,7 +28,15 @@ public class SensorController {
                 .model(input.getModel())
                 .enabled(false)
                 .build();
-        sensorRepository.save(sensor);
-        return sensor;
+        sensor = sensorRepository.save(sensor);
+        return SensorOutput.builder()
+                .id(sensor.getId().getValue())
+                .name(sensor.getName())
+                .ip(sensor.getIp())
+                .location(sensor.getLocation())
+                .protocol(sensor.getProtocol())
+                .model(sensor.getModel())
+                .enabled(sensor.getEnabled())
+                .build();
     }
 }
