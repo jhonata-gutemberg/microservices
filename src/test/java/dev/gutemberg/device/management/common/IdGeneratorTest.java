@@ -1,6 +1,5 @@
-package dev.gutemberg.device.management;
+package dev.gutemberg.device.management.common;
 
-import dev.gutemberg.device.management.common.IdGenerator;
 import io.hypersistence.tsid.TSID;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -8,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-class TSIDTest {
+class IdGeneratorTest {
 
     @Test
     void shouldGenerateTSID() {
