@@ -8,6 +8,9 @@ import dev.gutemberg.device.management.domain.model.SensorId;
 import dev.gutemberg.device.management.domain.repository.SensorRepository;
 import io.hypersistence.tsid.TSID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,11 +21,17 @@ import org.springframework.web.server.ResponseStatusException;
 public class SensorController {
     private final SensorRepository sensorRepository;
 
+    @GetMapping
+    public Page<SensorOutput> getAll(@PageableDefault Pageable pageable) {
+        Page<Sensor> sensors = sensorRepository.findAll(pageable);
+        return sensors.map(this::convertToModel);
+    }
+
     @GetMapping("{sensorId}")
     public SensorOutput getOne(@PathVariable TSID sensorId) {
         Sensor sensor = sensorRepository.findById(new SensorId(sensorId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        return convert(sensor);
+        return convertToModel(sensor);
     }
 
     @PostMapping
@@ -38,10 +47,10 @@ public class SensorController {
                 .enabled(false)
                 .build();
         sensor = sensorRepository.save(sensor);
-        return convert(sensor);
+        return convertToModel(sensor);
     }
 
-    private SensorOutput convert(Sensor sensor) {
+    private SensorOutput convertToModel(Sensor sensor) {
         return SensorOutput.builder()
                 .id(sensor.getId().getValue())
                 .name(sensor.getName())
