@@ -1,4 +1,4 @@
-package dev.gutemberg.temperature.processing;
+package dev.gutemberg.temperature.processing.common;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -7,7 +7,7 @@ import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
-public class UUIDv7Test {
+class IdGeneratorTest {
 
     @Test
     void shouldGenerateUUIDv7() {

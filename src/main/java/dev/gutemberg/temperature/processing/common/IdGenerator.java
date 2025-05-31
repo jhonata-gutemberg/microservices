@@ -1,4 +1,4 @@
-package dev.gutemberg.temperature.processing;
+package dev.gutemberg.temperature.processing.common;
 
 import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.impl.TimeBasedEpochRandomGenerator;

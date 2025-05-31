@@ -1,4 +1,4 @@
-package dev.gutemberg.temperature.processing;
+package dev.gutemberg.temperature.processing.common;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
