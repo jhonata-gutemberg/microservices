@@ -11,6 +11,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Entity
+@EqualsAndHashCode
 public class Sensor {
     @Id
     @AttributeOverride(name = "value", column = @Column(name = "id", columnDefinition = "BIGINT"))
