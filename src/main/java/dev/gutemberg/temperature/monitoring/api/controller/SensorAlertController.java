@@ -2,7 +2,6 @@ package dev.gutemberg.temperature.monitoring.api.controller;
 
 import dev.gutemberg.temperature.monitoring.api.model.SensorAlertInput;
 import dev.gutemberg.temperature.monitoring.api.model.SensorAlertOutput;
-import dev.gutemberg.temperature.monitoring.common.IdGenerator;
 import dev.gutemberg.temperature.monitoring.domain.model.SensorAlert;
 import dev.gutemberg.temperature.monitoring.domain.model.SensorId;
 import dev.gutemberg.temperature.monitoring.domain.repository.SensorAlertRepository;
@@ -34,6 +33,14 @@ public class SensorAlertController {
         sensorAlert.setMinTemperature(sensorAlertInput.getMinTemperature());
         sensorAlert = sensorAlertRepository.saveAndFlush(sensorAlert);
         return convertToModel(sensorAlert);
+    }
+
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable TSID sensorId) {
+        SensorAlert sensorAlert = sensorAlertRepository.findById(new SensorId(sensorId))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        sensorAlertRepository.delete(sensorAlert);
     }
 
     private SensorAlertOutput convertToModel(SensorAlert sensorAlert) {
