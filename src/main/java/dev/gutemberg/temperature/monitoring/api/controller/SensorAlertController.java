@@ -1,6 +1,8 @@
 package dev.gutemberg.temperature.monitoring.api.controller;
 
+import dev.gutemberg.temperature.monitoring.api.model.SensorAlertInput;
 import dev.gutemberg.temperature.monitoring.api.model.SensorAlertOutput;
+import dev.gutemberg.temperature.monitoring.common.IdGenerator;
 import dev.gutemberg.temperature.monitoring.domain.model.SensorAlert;
 import dev.gutemberg.temperature.monitoring.domain.model.SensorId;
 import dev.gutemberg.temperature.monitoring.domain.repository.SensorAlertRepository;
@@ -8,10 +10,7 @@ import dev.gutemberg.temperature.monitoring.domain.repository.SensorMonitoringRe
 import io.hypersistence.tsid.TSID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
@@ -24,6 +23,18 @@ public class SensorAlertController {
     public SensorAlertOutput getOne(@PathVariable TSID sensorId) {
         SensorAlert sensorAlert = sensorAlertRepository.findById(new SensorId(sensorId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return convertToModel(sensorAlert);
+    }
+
+    @PutMapping
+    public SensorAlertOutput upsert(@PathVariable TSID sensorId, @RequestBody SensorAlertInput sensorAlertInput) {
+        SensorAlert sensorAlert = sensorAlertRepository.findById(new SensorId(sensorId))
+                .orElse(SensorAlert.builder()
+                        .id(new SensorId(IdGenerator.generateTSID()))
+                        .build());
+        sensorAlert.setMaxTemperature(sensorAlertInput.getMaxTemperature());
+        sensorAlert.setMinTemperature(sensorAlertInput.getMinTemperature());
+        sensorAlert = sensorAlertRepository.saveAndFlush(sensorAlert);
         return convertToModel(sensorAlert);
     }
 
