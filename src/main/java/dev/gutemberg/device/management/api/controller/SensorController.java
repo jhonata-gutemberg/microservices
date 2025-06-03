@@ -1,5 +1,6 @@
 package dev.gutemberg.device.management.api.controller;
 
+import dev.gutemberg.device.management.api.client.SensorMonitoringClient;
 import dev.gutemberg.device.management.api.model.SensorInput;
 import dev.gutemberg.device.management.api.model.SensorOutput;
 import dev.gutemberg.device.management.common.IdGenerator;
@@ -20,6 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/api/sensors")
 public class SensorController {
     private final SensorRepository sensorRepository;
+    private final SensorMonitoringClient sensorMonitoringClient;
 
     @GetMapping
     public Page<SensorOutput> getAll(@PageableDefault Pageable pageable) {
@@ -69,6 +71,7 @@ public class SensorController {
         Sensor sensor = sensorRepository.findById(new SensorId(sensorId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         sensorRepository.delete(sensor);
+        sensorMonitoringClient.disableMonitoring(sensorId);
     }
 
     @PutMapping("{sensorId}/enable")
@@ -78,6 +81,7 @@ public class SensorController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         sensor.setEnabled(true);
         sensorRepository.save(sensor);
+        sensorMonitoringClient.enableMonitoring(sensorId);
     }
 
     @DeleteMapping("{sensorId}/enable")
@@ -87,6 +91,7 @@ public class SensorController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         sensor.setEnabled(false);
         sensorRepository.save(sensor);
+        sensorMonitoringClient.disableMonitoring(sensorId);
     }
 
     private SensorOutput convertToModel(Sensor sensor) {
