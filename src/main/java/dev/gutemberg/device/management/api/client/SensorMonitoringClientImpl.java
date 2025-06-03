@@ -9,7 +9,7 @@ public class SensorMonitoringClientImpl implements SensorMonitoringClient {
     private final RestClient restClient;
 
     public SensorMonitoringClientImpl(final RestClient.Builder builder) {
-        this.restClient = builder.baseUrl("https://localhost:8082").build();
+        this.restClient = builder.baseUrl("http://localhost:8082").build();
     }
 
     @Override
@@ -23,7 +23,7 @@ public class SensorMonitoringClientImpl implements SensorMonitoringClient {
     @Override
     public void disableMonitoring(TSID sensorId) {
         this.restClient.delete()
-                .uri("/api/sensors/{sensorId}/monitoring/disable")
+                .uri("/api/sensors/{sensorId}/monitoring/enable", sensorId)
                 .retrieve()
                 .toBodilessEntity();
     }
