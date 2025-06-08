@@ -1,7 +1,9 @@
 package dev.gutemberg.device.management.api.controller;
 
 import dev.gutemberg.device.management.api.client.SensorMonitoringClient;
+import dev.gutemberg.device.management.api.model.SensorDetailOutput;
 import dev.gutemberg.device.management.api.model.SensorInput;
+import dev.gutemberg.device.management.api.model.SensorMonitoringOutput;
 import dev.gutemberg.device.management.api.model.SensorOutput;
 import dev.gutemberg.device.management.common.IdGenerator;
 import dev.gutemberg.device.management.domain.model.Sensor;
@@ -34,6 +36,18 @@ public class SensorController {
         Sensor sensor = sensorRepository.findById(new SensorId(sensorId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return convertToModel(sensor);
+    }
+
+    @GetMapping("{sensorId}/detail")
+    public SensorDetailOutput getOneWithDetail(@PathVariable TSID sensorId) {
+        Sensor sensor = sensorRepository.findById(new SensorId(sensorId))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        SensorMonitoringOutput sensorMonitoringOutput = sensorMonitoringClient.getDetail(sensorId);
+        SensorOutput sensorOutput = convertToModel(sensor);
+        return SensorDetailOutput.builder()
+                .monitoring(sensorMonitoringOutput)
+                .sensor(sensorOutput)
+                .build();
     }
 
     @PostMapping
