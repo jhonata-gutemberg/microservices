@@ -38,6 +38,13 @@ public class CommentController {
         return convertToModel(comment);
     }
 
+    @GetMapping("/{commentId}")
+    CommentOutput getOne(@PathVariable final UUID commentId) {
+        final Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return convertToModel(comment);
+    }
+
     private CommentOutput convertToModel(final Comment comment) {
         return new CommentOutput(
                 comment.getId(),
