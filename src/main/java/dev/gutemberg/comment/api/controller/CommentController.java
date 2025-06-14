@@ -7,6 +7,9 @@ import dev.gutemberg.comment.api.model.ModerationInput;
 import dev.gutemberg.comment.domain.model.Comment;
 import dev.gutemberg.comment.domain.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -43,6 +46,11 @@ public class CommentController {
         final Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return convertToModel(comment);
+    }
+
+    @GetMapping
+    Page<CommentOutput> search(@PageableDefault Pageable pageable) {
+        return commentRepository.findAll(pageable).map(this::convertToModel);
     }
 
     private CommentOutput convertToModel(final Comment comment) {
