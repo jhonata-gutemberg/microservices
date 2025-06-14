@@ -1,5 +1,6 @@
 package dev.gutemberg.comment.api.config.web;
 
+import dev.gutemberg.comment.api.client.BadGatewayException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,6 +23,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         final var problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.GATEWAY_TIMEOUT, exception.getMessage());
         problemDetail.setTitle("Gateway timeout");
         problemDetail.setType(URI.create("/errors/gateway-timeout"));
+        return problemDetail;
+    }
+
+    @ExceptionHandler(BadGatewayException.class)
+    public ProblemDetail badGatewayException() {
+        final var problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_GATEWAY);
+        problemDetail.setTitle("Bad gateway");
+        problemDetail.setType(URI.create("/errors/bad-gateway"));
         return problemDetail;
     }
 }

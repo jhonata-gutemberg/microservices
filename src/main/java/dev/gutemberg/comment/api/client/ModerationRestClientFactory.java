@@ -1,6 +1,7 @@
 package dev.gutemberg.comment.api.client;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,9 @@ public class ModerationRestClientFactory {
 
     public RestClient build() {
         return builder.baseUrl("http://localhost:8081")
+                .defaultStatusHandler(HttpStatusCode::is5xxServerError, (request, response) -> {
+                    throw new BadGatewayException();
+                })
                 .requestFactory(clientHttpRequestFactory())
                 .build();
     }
