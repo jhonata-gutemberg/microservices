@@ -18,7 +18,7 @@ import static dev.gutemberg.temperature.monitoring.infrastructure.rabbitmq.Rabbi
 public class RabbitMQListener {
     private final TemperatureMonitoringService temperatureMonitoringService;
 
-    @RabbitListener(queues = QUEUE)
+    @RabbitListener(queues = QUEUE, concurrency = "2-3")
     @SneakyThrows
     public void handle(@Payload TemperatureLogData temperatureLogData) {
         temperatureMonitoringService.processTemperatureReading(temperatureLogData);
