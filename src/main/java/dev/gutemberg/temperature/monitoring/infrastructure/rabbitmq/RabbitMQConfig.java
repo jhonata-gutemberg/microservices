@@ -10,7 +10,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
-    public static final String QUEUE = "temperature-monitoring.process-temperature.v1.q";
+    public static final String PROCESS_TEMPERATURE_QUEUE = "temperature-monitoring.process-temperature.v1.q";
+    public static final String ALERTING_QUEUE = "temperature-monitoring.alerting.v1.q";
 
     @Bean
     public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
@@ -18,13 +19,23 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue queue() {
-        return QueueBuilder.durable(QUEUE).build();
+    public Queue processTemperatureQueue() {
+        return QueueBuilder.durable(PROCESS_TEMPERATURE_QUEUE).build();
     }
 
     @Bean
-    public Binding binding() {
-        return BindingBuilder.bind(queue()).to(exchange());
+    public Queue alertingQueue() {
+        return QueueBuilder.durable(ALERTING_QUEUE).build();
+    }
+
+    @Bean
+    public Binding processTemperatureBinding() {
+        return BindingBuilder.bind(processTemperatureQueue()).to(exchange());
+    }
+
+    @Bean
+    public Binding alertingBinding() {
+        return BindingBuilder.bind(alertingQueue()).to(exchange());
     }
 
     @Bean
