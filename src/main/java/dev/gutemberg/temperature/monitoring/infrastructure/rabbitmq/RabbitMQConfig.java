@@ -7,10 +7,14 @@ import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 public class RabbitMQConfig {
-    public static final String PROCESS_TEMPERATURE_QUEUE = "temperature-monitoring.process-temperature.v1.q";
+    private static final String PROCESS_TEMPERATURE = "temperature-monitoring.process-temperature.v1";
+    public static final String PROCESS_TEMPERATURE_QUEUE = PROCESS_TEMPERATURE + ".q";
+    public static final String PROCESS_TEMPERATURE_DEAD_LETTER_QUEUE = PROCESS_TEMPERATURE + ".dlq";
     public static final String ALERTING_QUEUE = "temperature-monitoring.alerting.v1.q";
 
     @Bean
@@ -20,7 +24,15 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue processTemperatureQueue() {
-        return QueueBuilder.durable(PROCESS_TEMPERATURE_QUEUE).build();
+        Map<String, Object> args = new HashMap<>();
+        args.put("x-dead-letter-exchange", "");
+        args.put("x-dead-letter-routing-key", PROCESS_TEMPERATURE_DEAD_LETTER_QUEUE);
+        return QueueBuilder.durable(PROCESS_TEMPERATURE_QUEUE).withArguments(args).build();
+    }
+
+    @Bean
+    public Queue processTemperatureDeadLetterQueue() {
+        return QueueBuilder.durable(PROCESS_TEMPERATURE_DEAD_LETTER_QUEUE).build();
     }
 
     @Bean
