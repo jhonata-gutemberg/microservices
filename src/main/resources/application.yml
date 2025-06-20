@@ -1,0 +1,8 @@
+server.port: 8081
+spring:
+  application.name: text-processor
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
