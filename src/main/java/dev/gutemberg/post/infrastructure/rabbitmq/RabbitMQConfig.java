@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
     public static final String POST_PROCESSING_EXCHANGE = "post-service.post-processing.v1.e";
     public static final String POST_PROCESSING_RESULT_QUEUE = "post-service.post-processing-result.v1.q";
+    private static final String POST_PROCESSING_RESULT_DLQ = "post-service.post-processing-result.v1.dlq";
     private static final String POST_PROCESSING_RESULT_EXCHANGE = "text-processor-service.post-processing-result.v1.e";
 
     @Bean
@@ -36,7 +37,15 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue postProcessingResultQueue() {
-        return QueueBuilder.durable(POST_PROCESSING_RESULT_QUEUE).build();
+        return QueueBuilder.durable(POST_PROCESSING_RESULT_QUEUE)
+                .deadLetterExchange("")
+                .deadLetterRoutingKey(POST_PROCESSING_RESULT_DLQ)
+                .build();
+    }
+
+    @Bean
+    public Queue postProcessingResultDLQ() {
+        return QueueBuilder.durable(POST_PROCESSING_RESULT_DLQ).build();
     }
 
     public FanoutExchange postProcessingResultExchange() {
