@@ -2,6 +2,7 @@ package dev.gutemberg.post.domain.services;
 
 import dev.gutemberg.post.api.models.PostInput;
 import dev.gutemberg.post.api.models.PostOutput;
+import dev.gutemberg.post.api.models.PostSummaryOutput;
 import dev.gutemberg.post.domain.entities.Post;
 import dev.gutemberg.post.domain.models.PostProcessingRequest;
 import dev.gutemberg.post.domain.models.PostProcessingResult;
@@ -9,16 +10,22 @@ import dev.gutemberg.post.domain.repositories.PostRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static dev.gutemberg.post.infrastructure.rabbitmq.RabbitMQConfig.POST_PROCESSING_EXCHANGE;
 
 @Service
 public class PostService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PostService.class);
+    private static final String LINE_SEPARATOR = "\n";
+    private static final int SUMMARY_LIMIT = 3;
 
     private final PostRepository postRepository;
     private final RabbitTemplate rabbitTemplate;
@@ -55,6 +62,11 @@ public class PostService {
                 }, () -> LOGGER.error("post with id {} not found", postId));
     }
 
+    @Transactional
+    public Page<PostSummaryOutput> search(final Pageable pageable) {
+        return postRepository.findAll(pageable).map(this::summarize);
+    }
+
     private PostOutput convert(final Post post) {
         return new PostOutput(
                 post.id(),
@@ -64,5 +76,20 @@ public class PostService {
                 post.wordCount(),
                 post.calculatedValue()
         );
+    }
+
+    private PostSummaryOutput summarize(final Post post) {
+        return new PostSummaryOutput(
+                post.id(),
+                post.title(),
+                buildSummary(post.body()),
+                post.author()
+        );
+    }
+
+    private String buildSummary(final String body) {
+        return Arrays.stream(body.splitWithDelimiters(LINE_SEPARATOR, SUMMARY_LIMIT + 1))
+                .limit(SUMMARY_LIMIT + 2L)
+                .collect(Collectors.joining());
     }
 }
