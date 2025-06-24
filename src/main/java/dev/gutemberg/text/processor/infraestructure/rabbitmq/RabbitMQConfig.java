@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Configuration
 public class RabbitMQConfig {
     public static final String POST_PROCESSING_QUEUE = "text-processor-service.post-processing.v1.q";
+    private static final String POST_PROCESSING_DLQ = "text-processor-service.post-processing.v1.dlq";
     private static final String POST_PROCESSING_EXCHANGE = "post-service.post-processing.v1.e";
     public static final String POST_PROCESSING_RESULT_EXCHANGE = "text-processor-service.post-processing-result.v1.e";
 
@@ -26,7 +27,15 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue postProcessingQueue() {
-        return QueueBuilder.durable(POST_PROCESSING_QUEUE).build();
+        return QueueBuilder.durable(POST_PROCESSING_QUEUE)
+                .deadLetterExchange("")
+                .deadLetterRoutingKey(POST_PROCESSING_DLQ)
+                .build();
+    }
+
+    @Bean
+    public Queue postProcessingDLQ() {
+        return QueueBuilder.durable(POST_PROCESSING_DLQ).build();
     }
 
     @Bean
