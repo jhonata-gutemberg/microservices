@@ -9,12 +9,12 @@ public class EntityToPostOutput implements Converter<Post, PostOutput> {
     @Override
     public PostOutput convert(@NotNull final Post post) {
         return new PostOutput(
-                post.id(),
-                post.title(),
-                post.body(),
-                post.author(),
-                post.wordCount(),
-                post.calculatedValue()
+                post.getId(),
+                post.getTitle(),
+                post.getBody(),
+                post.getAuthor(),
+                post.getWordCount(),
+                post.getCalculatedValue()
         );
     }
 }

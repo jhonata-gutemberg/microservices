@@ -14,10 +14,10 @@ public class EntityToPostSummaryOutput implements Converter<Post, PostSummaryOut
     @Override
     public PostSummaryOutput convert(@NotNull final Post post) {
         return new PostSummaryOutput(
-                post.id(),
-                post.title(),
-                summarize(post.body()),
-                post.author()
+                post.getId(),
+                post.getTitle(),
+                summarize(post.getBody()),
+                post.getAuthor()
         );
     }
 

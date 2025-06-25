@@ -19,7 +19,6 @@ import static dev.gutemberg.post.infrastructure.rabbitmq.RabbitMQConfig.POST_PRO
 @Service
 public class PostService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PostService.class);
-
     private final PostRepository postRepository;
     private final RabbitTemplate rabbitTemplate;
 
@@ -30,7 +29,7 @@ public class PostService {
 
     @Transactional
     public Post create(Post post) {
-        final var message = new PostProcessingRequest(post.id(), post.body());
+        final var message = new PostProcessingRequest(post.getId(), post.getBody());
         rabbitTemplate.convertAndSend(POST_PROCESSING_EXCHANGE, "", message);
         return postRepository.saveAndFlush(post);
     }
