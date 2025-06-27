@@ -13,18 +13,15 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import dev.gutemberg.post.domain.entities.Post;
 import dev.gutemberg.post.domain.services.PostService;
+import dev.gutemberg.post.ui.annotations.View;
 import dev.gutemberg.post.ui.events.CreatePostEvent;
 import dev.gutemberg.post.ui.models.PostInput;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.stereotype.Component;
 import java.util.Objects;
 
 import static com.vaadin.flow.theme.lumo.LumoUtility.*;
 
-@Component
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@View
 public class FormView extends VerticalLayout {
     private final TextField title = new TextField("Title", "New post title");
     private final TextField author = new TextField("Author", "John Doe");
