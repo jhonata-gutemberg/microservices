@@ -66,6 +66,6 @@ public class PostView extends Scroller {
     }
 
     private void propagateShowDetailsEvent(final ShowDetailsEvent event) {
-        fireEvent(new ShowDetailsEvent(this, event.postSummary()));
+        fireEvent(new ShowDetailsEvent(this, event.getPostId()));
     }
 }
