@@ -1,6 +1,0 @@
-[submodule "microservices/post"]
-	path = microservices/post
-	url = git@github.com:jhonata-gutemberg/post.git
-[submodule "microservices/text-processor"]
-	path = microservices/text-processor
-	url = git@github.com:jhonata-gutemberg/text-processor.git
