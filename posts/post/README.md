@@ -1,4 +1,4 @@
-## 📝 Post Service
+![Post Service](docs/assets/post-service.png)
 - Purpose: Accepts and stores posts, publishes processing requests, and updates metrics when results arrive.
 - Tech stack: Java 21, Spring Boot 3, Vaadin 24, H2, Spring AMQP.
 - Data model: `id` (UUID), `title`, `body`, `author`, `createdAt`, `wordCount` (after processing), `calculatedValue` (after processing).
@@ -31,7 +31,7 @@
     - `GET /api/posts?size=5&page=0&sort=createdAt,desc`
 
 ## 🖥️ UI
-![UI](assets/ui.png)
+![UI](docs/assets/ui.png)
 
 - Open `http://localhost:8080`
 - Left: form to create a post
